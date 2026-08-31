@@ -197,7 +197,7 @@ function SignInContent() {
 
           {/* Footer link */}
           <div className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
-            Don't have an account yet?{" "}
+            Don&apos;t have an account yet?{" "}
             <Link
               href="/signup"
               className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"

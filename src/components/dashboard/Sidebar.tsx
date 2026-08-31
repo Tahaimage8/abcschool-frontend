@@ -27,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
 
 function SidebarDesktop({ navItems, userRole }: { navItems: NavItem[]; userRole?: string }) {
   return (
-    <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:bg-white lg:dark:bg-gray-950 lg:border-r lg:border-gray-200 lg:dark:border-gray-800">
+    <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:bg-white lg:dark:bg-gray-950 lg:border-r lg:border-gray-200 lg:dark:border-gray-800">
       <div className="flex h-full flex-col">
         <div className="flex h-16 items-center px-4 border-b border-gray-200 dark:border-gray-800">
           <Link href="/dashboard" className="flex items-center gap-2.5">

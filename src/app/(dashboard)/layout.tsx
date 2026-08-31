@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar } from "@/components/dashboard";
 import { authClient } from "@/lib/auth-client";
 
@@ -11,8 +11,13 @@ export default function DashboardLayout({
 }) {
   const { data: session } = authClient.useSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const userRole = session?.user?.role as string | undefined;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const userRole = mounted ? (session?.user?.role as string | undefined) : undefined;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">

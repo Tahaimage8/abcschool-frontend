@@ -52,7 +52,7 @@ export default function AppHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/85 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/85">
+    <header className=" top-0 z-50 w-full border-b border-gray-200 bg-white/85 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/85">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         
         {/* Brand Logo */}
@@ -304,4 +304,4 @@ export default function AppHeader() {
       )}
     </header>
   );
-}
+}

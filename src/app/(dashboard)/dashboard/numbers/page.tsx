@@ -6,7 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { createNumberEntry } from "@/lib/api/numbers";
 
 const mobileNumberRegex = /^01[3-9]\d{8}$/;
 const mobileNumberField = z
@@ -24,13 +26,16 @@ const numberEntrySchema = z.object({
 type NumberEntryFormData = z.infer<typeof numberEntrySchema>;
 
 export default function NumbersPage() {
+  const router = useRouter();
   const { data: session } = authClient.useSession();
   const userName = session?.user?.name || "";
+  const userId = session?.user?.id;
 
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<NumberEntryFormData>({
     resolver: zodResolver(numberEntrySchema),
@@ -49,19 +54,27 @@ export default function NumbersPage() {
 
   const onSubmit = async (data: NumberEntryFormData) => {
     try {
-      toast.loading("Submitting...", { id: "submit" });
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      toast.loading("Saving to backend API...", { id: "submit" });
 
-      // TODO: backend ready hole eikhane API call boshbe
-      console.log("Submitted Entry:", {
-        name: data.userName,
+      await createNumberEntry({
+        userName: data.userName,
         mobileNumber: data.mobileNumber,
         numbers: data.numbers,
+        userId: userId || undefined,
       });
 
-      toast.success("Entry logged to console!", { id: "submit" });
-    } catch {
-      toast.error("Failed to submit", { id: "submit" });
+      toast.success("Entry saved to database successfully!", { id: "submit" });
+      reset({
+        userName: data.userName,
+        mobileNumber: "",
+        numbers: Array(10).fill(""),
+      });
+
+      // Navigate to History page to view saved entries
+      router.push("/dashboard/history");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to connect to backend server";
+      toast.error(msg, { id: "submit" });
     }
   };
 
@@ -157,7 +170,7 @@ export default function NumbersPage() {
           {isSubmitting ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Submitting...</span>
+              <span>Submitting to API...</span>
             </>
           ) : (
             <>

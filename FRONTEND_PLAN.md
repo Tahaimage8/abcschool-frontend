@@ -46,13 +46,14 @@ if (!session || !['ADMIN', 'CLASS_TEACHER'].includes(userRole)) {
 
 ### Form Fields
 - **My Name** (prefilled from session, editable)
-- **10 Number Inputs** (type="number", required, validation)
+- **10 Mobile Number Inputs** (type="tel", required, Bangladeshi mobile format validation)
 - **Submit Button** → POST to mock API
 
 ### Validation Rules
-- Exactly 10 numbers required
-- Each number: min 0, max 1000 (configurable)
 - Name required
+- Mobile Number (primary): must match Bangladeshi format `01[3-9]XXXXXXXX` (11 digits, starting 013–019)
+- Exactly 10 mobile numbers required (Mobile Number 1–10)
+- Each of the 10 numbers: same Bangladeshi mobile format as above — not a plain 0–1000 number anymore
 
 ---
 

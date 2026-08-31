@@ -26,6 +26,7 @@ export async function createNumberEntry(
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -51,6 +52,7 @@ export async function getNumberEntries(
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   });
 
   const data = await res.json();
@@ -65,6 +67,7 @@ export async function getNumberEntries(
 export async function deleteNumberEntry(id: string): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/numbers/${id}`, {
     method: "DELETE",
+    credentials: "include",
   });
 
   const data = await res.json();

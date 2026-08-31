@@ -16,7 +16,7 @@ async function seedAdmin() {
 
   const client = new MongoClient(uri);
   await client.connect();
-  const db = client.db();
+  const db = client.db("school");
   const usersCollection = db.collection("user");
 
   const existingUser = await usersCollection.findOne({ email: adminEmail });
@@ -38,8 +38,8 @@ async function seedAdmin() {
           email: adminEmail,
           password: adminPassword,
           name: adminName,
-          role: "ADMIN",
         },
+        headers: new Headers(),
       });
 
       // Force role assignment in database

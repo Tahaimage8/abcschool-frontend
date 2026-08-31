@@ -14,21 +14,25 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+import { authClient } from "@/lib/auth-client";
+
 export default function AppHeader() {
   const pathname = usePathname();
-
-  // Demo State: User Login Status (Toggle for testing)
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const { data: session } = authClient.useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Demo User Data
+  const isLoggedIn = !!session?.user;
   const user = {
-    name: "John Doe",
-    email: "john@example.com",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+    name: session?.user?.name || "User",
+    email: session?.user?.email || "",
+    avatar:
+      session?.user?.image ||
+      `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+        session?.user?.name || "User"
+      )}`,
   };
 
   const navItems = [
@@ -157,8 +161,8 @@ export default function AppHeader() {
                   {/* Sign Out Action */}
                   <button
                     type="button"
-                    onClick={() => {
-                      setIsLoggedIn(false);
+                    onClick={async () => {
+                      await authClient.signOut();
                       setIsDropdownOpen(false);
                     }}
                     className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
@@ -172,13 +176,12 @@ export default function AppHeader() {
           ) : (
             /* Logged Out State: Sign In & Sign Up Buttons */
             <div className="flex items-center gap-2.5">
-              <button
-                type="button"
-                onClick={() => setIsLoggedIn(true)} // Demo toggle
+              <Link
+                href="/signin"
                 className="rounded-full px-4 py-2 text-sm font-semibold text-blue-600 transition-colors hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/40"
               >
                 Sign In
-              </button>
+              </Link>
               <Link
                 href="/signup"
                 className="rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:bg-blue-700 active:scale-95 dark:bg-blue-500 dark:hover:bg-blue-600"
@@ -268,8 +271,8 @@ export default function AppHeader() {
                 </Link>
                 <button
                   type="button"
-                  onClick={() => {
-                    setIsLoggedIn(false);
+                  onClick={async () => {
+                    await authClient.signOut();
                     setIsMobileMenuOpen(false);
                   }}
                   className="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
@@ -281,16 +284,13 @@ export default function AppHeader() {
             </div>
           ) : (
             <div className="flex flex-col gap-2.5 pt-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLoggedIn(true);
-                  setIsMobileMenuOpen(false);
-                }}
+              <Link
+                href="/signin"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="w-full rounded-xl border border-gray-300 py-2.5 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
               >
                 Sign In
-              </button>
+              </Link>
               <Link
                 href="/signup"
                 onClick={() => setIsMobileMenuOpen(false)}

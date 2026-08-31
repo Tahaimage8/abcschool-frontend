@@ -10,7 +10,7 @@ if (!uri) {
 }
 
 const client = new MongoClient(uri);
-const db = client.db();
+const db = client.db("school");
 
 export const auth = betterAuth({
   database: mongodbAdapter(db, {
@@ -21,14 +21,28 @@ export const auth = betterAuth({
       role: {
         type: "string",
         required: false,
-        defaultValue: "CLASS_TEACHER" satisfies UserRole,
-        input: true,
+        defaultValue: "MEMBER" satisfies UserRole,
+        input: false,
+      },
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          return {
+            data: {
+              ...user,
+              role: "MEMBER",
+            },
+          };
+        },
       },
     },
   },
   plugins: [
     admin({
-      defaultRole: "CLASS_TEACHER",
+      defaultRole: "MEMBER",
       adminRole: ["ADMIN", "PRINCIPAL"],
     }),
   ],

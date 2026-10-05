@@ -9,30 +9,26 @@ import {
   LogOut,
   Menu,
   X,
-  User as UserIcon,
   Settings,
   ChevronDown,
 } from "lucide-react";
-
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AppHeader() {
   const pathname = usePathname();
-  const { data: session } = authClient.useSession();
+  const { user: authUser, isAuthenticated, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isLoggedIn = !!session?.user;
+  const isLoggedIn = isAuthenticated;
   const user = {
-    name: session?.user?.name || "User",
-    email: session?.user?.email || "",
-    avatar:
-      session?.user?.image ||
-      `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-        session?.user?.name || "User"
-      )}`,
+    name: authUser?.name || "User",
+    email: authUser?.email || "",
+    avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+      authUser?.name || "User"
+    )}`,
   };
 
   const navItems = [
@@ -45,7 +41,10 @@ export default function AppHeader() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     }
@@ -58,9 +57,11 @@ export default function AppHeader() {
   return (
     <header className=" top-0 z-50 w-full border-b border-gray-200 bg-white/85 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/85">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 transition-opacity hover:opacity-90"
+        >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
             <GraduationCap className="h-6 w-6" />
           </div>
@@ -112,7 +113,11 @@ export default function AppHeader() {
                 <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                   {user.name}
                 </span>
-                <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${
+                    isDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
 
               {/* User Dropdown Menu */}
@@ -161,8 +166,8 @@ export default function AppHeader() {
                   {/* Sign Out Action */}
                   <button
                     type="button"
-                    onClick={async () => {
-                      await authClient.signOut();
+                    onClick={() => {
+                      logout();
                       setIsDropdownOpen(false);
                     }}
                     className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
@@ -271,8 +276,8 @@ export default function AppHeader() {
                 </Link>
                 <button
                   type="button"
-                  onClick={async () => {
-                    await authClient.signOut();
+                  onClick={() => {
+                    logout();
                     setIsMobileMenuOpen(false);
                   }}
                   className="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"

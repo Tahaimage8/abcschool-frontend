@@ -17,13 +17,14 @@ import {
   ArrowRight,
   ShieldCheck,
 } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/context/AuthContext";
 import { signUpSchema, SignUpInput } from "@/lib/validations/auth";
 
 export default function SignUpPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { register: registerAuth } = useAuth();
 
   const {
     register,
@@ -41,22 +42,18 @@ export default function SignUpPage() {
 
   const onSubmit = async (values: SignUpInput) => {
     try {
-      // Sign up user via Better Auth (role is automatically forced to MEMBER on server)
-      const res = await authClient.signUp.email({
+      await registerAuth({
+        name: values.name,
         email: values.email,
         password: values.password,
-        name: values.name,
+        role: "user",
       });
 
-      if (res.error) {
-        toast.error(res.error.message || "Failed to create account. Please try again.");
-        return;
-      }
-
-      toast.success("Account created successfully! Please sign in.");
+      toast.success("Account created successfully! Welcome to ABC School.");
       router.push("/signin?registered=true");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
+      const msg =
+        err instanceof Error ? err.message : "An unexpected error occurred.";
       toast.error(msg);
     }
   };
@@ -79,7 +76,11 @@ export default function SignUpPage() {
 
         {/* Card */}
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 backdrop-blur-sm">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-5"
+            noValidate
+          >
             {/* Full Name */}
             <div>
               <label
@@ -173,7 +174,11 @@ export default function SignUpPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
                 </button>
               </div>
               {errors.password && (
@@ -229,7 +234,9 @@ export default function SignUpPage() {
             {/* Note badge regarding Member role */}
             <div className="flex items-center gap-2 p-3 bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 rounded-xl text-xs text-indigo-700 dark:text-indigo-300">
               <ShieldCheck className="w-4 h-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
-              <span>Accounts are registered with standard Member permissions by default.</span>
+              <span>
+                Accounts are registered with standard Member permissions by default.
+              </span>
             </div>
 
             {/* Submit Button */}

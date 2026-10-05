@@ -16,7 +16,7 @@ import {
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/context/AuthContext";
 import { signInSchema, SignInInput } from "@/lib/validations/auth";
 
 function SignInContent() {
@@ -25,14 +25,14 @@ function SignInContent() {
   const isRegistered = searchParams.get("registered") === "true";
 
   const [showPassword, setShowPassword] = useState(false);
-  const { data: session, isPending: isSessionLoading } = authClient.useSession();
+  const { user, isLoading, login } = useAuth();
 
   // If already authenticated, redirect to /dashboard
   useEffect(() => {
-    if (!isSessionLoading && session?.user) {
+    if (!isLoading && user) {
       router.push("/dashboard");
     }
-  }, [session, isSessionLoading, router]);
+  }, [user, isLoading, router]);
 
   const {
     register,
@@ -48,26 +48,22 @@ function SignInContent() {
 
   const onSubmit = async (values: SignInInput) => {
     try {
-      const res = await authClient.signIn.email({
+      await login({
         email: values.email,
         password: values.password,
       });
-
-      if (res.error) {
-        toast.error(res.error.message || "Invalid email or password.");
-        return;
-      }
 
       toast.success("Signed in successfully!");
       router.push("/dashboard");
       router.refresh();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
+      const msg =
+        err instanceof Error ? err.message : "An unexpected error occurred.";
       toast.error(msg);
     }
   };
 
-  if (isSessionLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50 dark:bg-gray-950">
         <Loader2 className="w-8 h-8 animate-spin text-indigo-600 dark:text-indigo-400" />
@@ -95,13 +91,19 @@ function SignInContent() {
         {isRegistered && (
           <div className="mb-6 p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 rounded-xl flex items-center gap-3 text-emerald-800 dark:text-emerald-300 text-sm">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>Account created successfully! Please log in with your credentials.</span>
+            <span>
+              Account created successfully! Please log in with your credentials.
+            </span>
           </div>
         )}
 
         {/* Card */}
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 backdrop-blur-sm">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-5"
+            noValidate
+          >
             {/* Email Address */}
             <div>
               <label
@@ -165,7 +167,11 @@ function SignInContent() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
                 </button>
               </div>
               {errors.password && (

@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "../jwtAuth";
+
 const rawApiUrl =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 const API_BASE_URL = rawApiUrl.replace(/\/+$/, "");
@@ -24,9 +26,7 @@ export async function createNumberEntry(
 ): Promise<NumberEntryItem> {
   const res = await fetch(`${API_BASE_URL}/numbers`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     credentials: "include",
     body: JSON.stringify(payload),
   });
@@ -50,9 +50,7 @@ export async function getNumberEntries(
 
   const res = await fetch(url.toString(), {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     credentials: "include",
   });
 
@@ -68,6 +66,7 @@ export async function getNumberEntries(
 export async function deleteNumberEntry(id: string): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/numbers/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
     credentials: "include",
   });
 

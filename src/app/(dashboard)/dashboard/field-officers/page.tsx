@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { UserCheck, UserPlus, Loader2, Hash, AtSign, ShieldAlert } from "lucide-react";
+import { UserCheck, UserPlus, Loader2, Hash, Mail, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -17,7 +17,7 @@ export default function FieldOfficersDashboardPage() {
 
   // Form states for creating Field Officer
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [creating, setCreating] = useState(false);
 
@@ -42,17 +42,17 @@ export default function FieldOfficersDashboardPage() {
 
   const handleCreateFieldOfficer = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !username || !password) {
+    if (!name || !email || !password) {
       toast.error("Please fill in all fields");
       return;
     }
 
     try {
       setCreating(true);
-      const res = await createFieldOfficer({ name, username, password });
+      const res = await createFieldOfficer({ name, email, password });
       toast.success(`Field Officer created! Sub-ID: ${res.fieldOfficer.sub_id}`);
       setName("");
-      setUsername("");
+      setEmail("");
       setPassword("");
       fetchFieldOfficers();
     } catch (err: unknown) {
@@ -112,17 +112,17 @@ export default function FieldOfficersDashboardPage() {
 
             <div>
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                Username (For Login)
+                Email Address
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                  <AtSign className="w-4 h-4" />
+                  <Mail className="w-4 h-4" />
                 </span>
                 <input
-                  type="text"
-                  placeholder="fo_user1"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  type="email"
+                  placeholder="fo@school.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 rounded-xl text-sm"
                 />
               </div>
@@ -179,7 +179,7 @@ export default function FieldOfficersDashboardPage() {
                   <tr>
                     <th className="px-6 py-3">Relational Sub-ID</th>
                     <th className="px-6 py-3">Name</th>
-                    <th className="px-6 py-3">Username</th>
+                    <th className="px-6 py-3">Email</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
@@ -196,8 +196,8 @@ export default function FieldOfficersDashboardPage() {
                       </td>
                       <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
                         <div className="flex items-center gap-1">
-                          <AtSign className="w-3.5 h-3.5 text-gray-400" />
-                          <span>{fo.username}</span>
+                          <Mail className="w-3.5 h-3.5 text-gray-400" />
+                          <span>{fo.email}</span>
                         </div>
                       </td>
                     </tr>

@@ -16,11 +16,27 @@ export interface ManagerUser {
 export interface FieldOfficerUser {
   id: string;
   name: string;
-  username: string;
+  email: string;
   role: "field_officer";
   sub_id: string;
   parent_manager_id: string;
   createdAt?: string;
+}
+
+async function safeJsonParse(res: Response, defaultErrorMsg: string) {
+  const text = await res.text();
+  try {
+    const data = JSON.parse(text);
+    if (!res.ok) {
+      throw new Error(data.error || defaultErrorMsg);
+    }
+    return data;
+  } catch (err: any) {
+    if (!res.ok) {
+      throw new Error(err.message || defaultErrorMsg);
+    }
+    throw new Error(`Server returned non-JSON response: ${text.substring(0, 100)}`);
+  }
 }
 
 export async function createManager(payload: {
@@ -34,11 +50,7 @@ export async function createManager(payload: {
     body: JSON.stringify(payload),
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error || "Failed to create manager");
-  }
-  return data;
+  return await safeJsonParse(res, "Failed to create manager");
 }
 
 export async function getManagers(): Promise<{ managers: ManagerUser[] }> {
@@ -47,11 +59,7 @@ export async function getManagers(): Promise<{ managers: ManagerUser[] }> {
     headers: getAuthHeaders(),
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error || "Failed to fetch managers");
-  }
-  return data;
+  return await safeJsonParse(res, "Failed to fetch managers");
 }
 
 export async function resetManagerPassword(payload: {
@@ -64,16 +72,12 @@ export async function resetManagerPassword(payload: {
     body: JSON.stringify(payload),
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error || "Failed to reset manager password");
-  }
-  return data;
+  return await safeJsonParse(res, "Failed to reset manager password");
 }
 
 export async function createFieldOfficer(payload: {
   name: string;
-  username: string;
+  email: string;
   password: string;
 }): Promise<{ message: string; fieldOfficer: FieldOfficerUser }> {
   const res = await fetch(`${API_BASE_URL}/manager/field-officers`, {
@@ -82,11 +86,7 @@ export async function createFieldOfficer(payload: {
     body: JSON.stringify(payload),
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error || "Failed to create field officer");
-  }
-  return data;
+  return await safeJsonParse(res, "Failed to create field officer");
 }
 
 export async function getMyFieldOfficers(): Promise<{
@@ -97,9 +97,5 @@ export async function getMyFieldOfficers(): Promise<{
     headers: getAuthHeaders(),
   });
 
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error || "Failed to fetch field officers");
-  }
-  return data;
+  return await safeJsonParse(res, "Failed to fetch field officers");
 }

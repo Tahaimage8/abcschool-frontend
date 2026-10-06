@@ -83,7 +83,12 @@ export async function createFieldOfficer(payload: {
   const res = await fetch(`${API_BASE_URL}/manager/field-officers`, {
     method: "POST",
     headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      name: payload.name,
+      email: payload.email,
+      username: payload.email,
+      password: payload.password,
+    }),
   });
 
   return await safeJsonParse(res, "Failed to create field officer");

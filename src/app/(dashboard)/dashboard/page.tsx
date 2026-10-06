@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/context/AuthContext";
 import {
   GraduationCap,
   User,
@@ -11,13 +11,7 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
-  const { data: session } = authClient.useSession();
-
-  const user = session?.user as {
-    name?: string;
-    email?: string;
-    role?: string;
-  } | null;
+  const { user } = useAuth();
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">

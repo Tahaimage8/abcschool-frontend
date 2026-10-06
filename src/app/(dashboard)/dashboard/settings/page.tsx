@@ -2,11 +2,10 @@
 
 import React from "react";
 import { Settings, User, Mail, Lock, Bell } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SettingsPage() {
-  const { data: session } = authClient.useSession();
-  const user = session?.user;
+  const { user } = useAuth();
 
   const tabs = [
     { id: "profile", label: "Profile", icon: User },

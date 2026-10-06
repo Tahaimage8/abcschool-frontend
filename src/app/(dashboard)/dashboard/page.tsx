@@ -8,6 +8,9 @@ import {
   Mail,
   Shield,
   CheckCircle2,
+  Hash,
+  Users,
+  UserCheck,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -26,7 +29,7 @@ export default function DashboardPage() {
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Welcome, {user?.name || "User"}!
               </h1>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-300">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-300">
                 {user?.role || "MEMBER"}
               </span>
             </div>
@@ -44,7 +47,7 @@ export default function DashboardPage() {
           Your Authentication Session
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
             <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
               <User className="w-4 h-4 text-indigo-500" />
@@ -58,10 +61,10 @@ export default function DashboardPage() {
           <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
             <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
               <Mail className="w-4 h-4 text-indigo-500" />
-              Email
+              Email / Identifier
             </div>
             <p className="text-base font-medium text-gray-900 dark:text-white truncate">
-              {user?.email || "N/A"}
+              {user?.email || user?.username || "N/A"}
             </p>
           </div>
 
@@ -70,8 +73,24 @@ export default function DashboardPage() {
               <Shield className="w-4 h-4 text-indigo-500" />
               Assigned Role
             </div>
-            <p className="text-base font-medium text-indigo-600 dark:text-indigo-400">
+            <p className="text-base font-semibold text-indigo-600 dark:text-indigo-400 uppercase">
               {user?.role || "MEMBER"}
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+              <Hash className="w-4 h-4 text-indigo-500" />
+              Sub-ID
+            </div>
+            <p className="text-base font-bold text-gray-900 dark:text-white">
+              {user?.sub_id ? (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900">
+                  {user.sub_id}
+                </span>
+              ) : (
+                "N/A (Admin/User)"
+              )}
             </p>
           </div>
         </div>
@@ -83,20 +102,55 @@ export default function DashboardPage() {
           Quick Actions
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {user?.role === "admin" && (
+            <a
+              href="/dashboard/managers"
+              className="p-4 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/60 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">Manage Managers</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Create & reset managers (314+)</p>
+                </div>
+              </div>
+            </a>
+          )}
+
+          {(user?.role === "admin" || user?.role === "manager") && (
+            <a
+              href="/dashboard/field-officers"
+              className="p-4 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/60 flex items-center justify-center">
+                  <UserCheck className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">Field Officers</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Create & view FO sub-IDs (314/1)</p>
+                </div>
+              </div>
+            </a>
+          )}
+
           <a
             href="/dashboard/numbers"
-            className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors"
+            className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
                 <p className="font-medium text-gray-900 dark:text-white">Number Entry</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Add 10 numbers with your name</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Add 10 numbers entry</p>
               </div>
             </div>
           </a>
+
           <a
             href="/dashboard/history"
             className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
@@ -109,10 +163,11 @@ export default function DashboardPage() {
               </div>
               <div>
                 <p className="font-medium text-gray-900 dark:text-white">History</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">View your past entries</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">View past submissions</p>
               </div>
             </div>
           </a>
+
           <a
             href="/dashboard/settings"
             className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
@@ -126,7 +181,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <p className="font-medium text-gray-900 dark:text-white">Settings</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Manage your preferences</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Manage preferences</p>
               </div>
             </div>
           </a>

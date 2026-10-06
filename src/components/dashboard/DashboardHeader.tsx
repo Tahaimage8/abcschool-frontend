@@ -4,24 +4,22 @@ import React, { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { LogOut, User as UserIcon, Settings, ChevronDown } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/context/AuthContext";
 
 export function DashboardHeader() {
   const pathname = usePathname();
-  const { data: session } = authClient.useSession();
+  const { user: authUser, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isLoggedIn = !!session?.user;
+  const isLoggedIn = !!authUser;
   const user = {
-    name: session?.user?.name || "User",
-    email: session?.user?.email || "",
-    role: session?.user?.role || "MEMBER",
-    avatar:
-      session?.user?.image ||
-      `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-        session?.user?.name || "User"
-      )}`,
+    name: authUser?.name || "User",
+    email: authUser?.email || "",
+    role: authUser?.role || "MEMBER",
+    avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+      authUser?.name || "User"
+    )}`,
   };
 
   useEffect(() => {
@@ -111,8 +109,8 @@ export function DashboardHeader() {
 
                   <button
                     type="button"
-                    onClick={async () => {
-                      await authClient.signOut();
+                    onClick={() => {
+                      logout();
                       setIsDropdownOpen(false);
                     }}
                     className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"

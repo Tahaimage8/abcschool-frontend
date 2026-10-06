@@ -129,8 +129,9 @@ export function Sidebar({ isOpen, onClose, userRole }: SidebarProps) {
     setIsClient(true);
   }, []);
 
+  const normalizedRole = userRole?.toUpperCase() || "";
   const filteredNavItems = NAV_ITEMS.filter((item) =>
-    item.roles.includes(userRole || "")
+    item.roles.includes(normalizedRole) || normalizedRole === "ADMIN" || item.roles.includes("USER")
   );
 
   return (

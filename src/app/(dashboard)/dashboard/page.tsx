@@ -85,11 +85,15 @@ export default function DashboardPage() {
             </div>
             <p className="text-base font-bold text-gray-900 dark:text-white">
               {user?.sub_id ? (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900">
                   {user.sub_id}
                 </span>
+              ) : user?.role === "admin" ? (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900 text-xs">
+                  ADMIN (ROOT)
+                </span>
               ) : (
-                "N/A (Admin/User)"
+                <span className="text-xs text-gray-400 font-normal">None</span>
               )}
             </p>
           </div>

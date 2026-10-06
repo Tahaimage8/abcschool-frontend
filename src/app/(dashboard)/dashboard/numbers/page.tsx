@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/context/AuthContext";
 import { createNumberEntry } from "@/lib/api/numbers";
 
 const mobileNumberRegex = /^01[3-9]\d{8}$/;
@@ -27,9 +27,9 @@ type NumberEntryFormData = z.infer<typeof numberEntrySchema>;
 
 export default function NumbersPage() {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
-  const userName = session?.user?.name || "";
-  const userId = session?.user?.id;
+  const { user } = useAuth();
+  const userName = user?.name || "";
+  const userId = user?.id;
 
   const {
     register,

@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { History, Loader2, Trash2, Phone, User, Calendar, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/context/AuthContext";
 import { getNumberEntries, deleteNumberEntry, NumberEntryItem } from "@/lib/api/numbers";
 
 export default function HistoryPage() {
-  const { data: session } = authClient.useSession();
-  const userId = session?.user?.id;
+  const { user } = useAuth();
+  const userId = user?.id;
 
   const [entries, setEntries] = useState<NumberEntryItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

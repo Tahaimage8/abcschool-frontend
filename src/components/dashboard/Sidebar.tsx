@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, LayoutDashboard, PlusCircle, History, Settings, GraduationCap } from "lucide-react";
+import { X, LayoutDashboard, PlusCircle, History, Settings, GraduationCap, Users, UserCheck } from "lucide-react";
 import { SidebarNavItem } from "./SidebarNavItem";
 
 interface SidebarProps {
@@ -19,10 +19,12 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Overview", icon: <LayoutDashboard className="h-5 w-5" />, roles: ["ADMIN", "CLASS_TEACHER", "PRINCIPAL"] },
-  { href: "/dashboard/numbers", label: "Number Entry", icon: <PlusCircle className="h-5 w-5" />, roles: ["ADMIN", "CLASS_TEACHER"] },
-  { href: "/dashboard/history", label: "History", icon: <History className="h-5 w-5" />, roles: ["ADMIN", "CLASS_TEACHER", "PRINCIPAL"] },
-  { href: "/dashboard/settings", label: "Settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "CLASS_TEACHER", "PRINCIPAL"] },
+  { href: "/dashboard", label: "Overview", icon: <LayoutDashboard className="h-5 w-5" />, roles: ["ADMIN", "MANAGER", "FIELD_OFFICER", "USER"] },
+  { href: "/dashboard/managers", label: "Manage Managers", icon: <Users className="h-5 w-5" />, roles: ["ADMIN"] },
+  { href: "/dashboard/field-officers", label: "Field Officers", icon: <UserCheck className="h-5 w-5" />, roles: ["ADMIN", "MANAGER"] },
+  { href: "/dashboard/numbers", label: "Number Entry", icon: <PlusCircle className="h-5 w-5" />, roles: ["ADMIN", "MANAGER", "FIELD_OFFICER", "USER"] },
+  { href: "/dashboard/history", label: "History", icon: <History className="h-5 w-5" />, roles: ["ADMIN", "MANAGER", "FIELD_OFFICER", "USER"] },
+  { href: "/dashboard/settings", label: "Settings", icon: <Settings className="h-5 w-5" />, roles: ["ADMIN", "MANAGER", "FIELD_OFFICER", "USER"] },
 ];
 
 function SidebarDesktop({ navItems, userRole }: { navItems: NavItem[]; userRole?: string }) {

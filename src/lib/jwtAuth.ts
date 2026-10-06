@@ -5,8 +5,11 @@ const API_BASE_URL = rawApiUrl.replace(/\/+$/, "");
 export interface JwtUser {
   id: string;
   name: string;
-  email: string;
-  role: "admin" | "user";
+  email?: string;
+  username?: string;
+  role: "admin" | "manager" | "field_officer" | "user";
+  sub_id?: string;
+  parent_manager_id?: string;
   createdAt?: string;
 }
 
@@ -20,11 +23,13 @@ export interface RegisterPayload {
   name: string;
   email: string;
   password: string;
-  role?: "admin" | "user";
+  role?: "admin" | "manager" | "field_officer" | "user";
 }
 
 export interface LoginPayload {
-  email: string;
+  identifier?: string;
+  email?: string;
+  username?: string;
   password: string;
 }
 

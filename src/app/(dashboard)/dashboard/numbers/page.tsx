@@ -302,6 +302,7 @@ export default function NumbersPage() {
                 <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
                   <thead className="bg-gray-50 dark:bg-gray-800/60 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-200 dark:border-gray-800">
                     <tr>
+                      <th scope="col" className="px-6 py-3.5 font-semibold">Number ID</th>
                       <th scope="col" className="px-6 py-3.5 font-semibold">Mobile Number</th>
                       <th scope="col" className="px-6 py-3.5 font-semibold">Payment Method</th>
                       <th scope="col" className="px-6 py-3.5 font-semibold">Status</th>
@@ -312,9 +313,13 @@ export default function NumbersPage() {
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                     {numbersList.map((item) => (
                       <tr key={item._id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                        <td className="px-6 py-4 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                          {item.number_id || "N/A"}
+                        </td>
                         <td className="px-6 py-4 font-mono font-semibold text-gray-900 dark:text-white">
                           {item.number}
                         </td>
+
                         <td className="px-6 py-4">
                           <span
                             className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border uppercase tracking-wider ${getMethodBadgeStyle(

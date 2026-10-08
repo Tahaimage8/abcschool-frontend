@@ -84,6 +84,7 @@ export interface FONumberPayload {
 
 export interface FONumberItem {
   _id: string;
+  number_id?: string;
   number: string;
   payment_method: "bkash" | "nogod" | "rocket" | "upay";
   status: "active" | "inactive";

@@ -33,6 +33,7 @@ export default function NumbersPage() {
   const [numbersList, setNumbersList] = useState<FONumberItem[]>([]);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -68,6 +69,7 @@ export default function NumbersPage() {
   }, [activeTab, fetchNumbers]);
 
   const onAddSubmit = async (data: SingleNumberFormData) => {
+    setSubmitError(null);
     try {
       toast.loading("Adding number...", { id: "add-number" });
       await createFONumber({
@@ -81,9 +83,11 @@ export default function NumbersPage() {
       });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to add number";
+      setSubmitError(msg);
       toast.error(msg, { id: "add-number" });
     }
   };
+
 
   const handleToggleStatus = async (item: FONumberItem) => {
     try {
@@ -180,6 +184,14 @@ export default function NumbersPage() {
               <PlusCircle className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
               Single Number Entry
             </h2>
+
+            {submitError && (
+              <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm flex items-center gap-2 font-medium">
+                <XCircle className="w-5 h-5 shrink-0 text-red-600 dark:text-red-400" />
+                <span>{submitError}</span>
+              </div>
+            )}
+
 
             <div>
               <label htmlFor="number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
